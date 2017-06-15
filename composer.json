@@ -1,0 +1,51 @@
+{
+    "name": "dfo/craft-elastic",
+    "description": "Craft integration with Elasticsearch",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "craft elastic"
+    ],
+    "support": {
+        "docs": "https://github.com/netliferesearch/craft-elastic/blob/master/README.md",
+        "issues": "https://github.com/netliferesearch/craft-elastic/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Peter Holme Obrestad",
+            "homepage": "https://dfo.no"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "~3.0.0-beta.1",
+        "elasticsearch/elasticsearch": "^5.2"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+          "dfo\\craftelastic\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Craft Elastic",
+        "handle": "craftElastic",
+        "schemaVersion": "1.0.0",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/netliferesearch/craft-elastic/master/CHANGELOG.md",
+        "components": {
+            "craftElasticService": "dfo\\craftelastic\\services\\CraftElasticService"
+        },
+        "class": "dfo\\craftelastic\\CraftElastic"
+    }
+}

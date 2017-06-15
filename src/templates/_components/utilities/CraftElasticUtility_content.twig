@@ -1,0 +1,23 @@
+{#
+/**
+ * Craft Elastic plugin for Craft CMS
+ *
+ * CraftElasticUtility Utility Content
+ *
+ * @author    Peter Holme Obrestad
+ * @copyright Copyright (c) 2017 Peter Holme Obrestad
+ * @link      https://dfo.no
+ * @package   CraftElastic
+ * @since     1.0.0
+ */
+#}
+
+<h1>CraftElasticUtility</h1>
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@dfo/craftelastic/assetbundles/craftelasticutilityutility/dist', true) ~ '/img/CraftElasticUtility-icon.svg' %}
+
+<img src="{{ iconUrl }}" height="64" width="64" />
+
+<p>Your Utility content goes here</p>
+
+<p>{{ someVar }}</p>

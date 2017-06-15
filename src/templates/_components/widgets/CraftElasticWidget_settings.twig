@@ -1,0 +1,25 @@
+{#
+/**
+ * Craft Elastic plugin for Craft CMS
+ *
+ * CraftElasticWidget Widget Settings
+ *
+ * @author    Peter Holme Obrestad
+ * @copyright Copyright (c) 2017 Peter Holme Obrestad
+ * @link      https://dfo.no
+ * @package   CraftElastic
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("dfo\\craftelastic\\assetbundles\\craftelastic\\CraftElasticAsset") %}
+
+{{ forms.textField({
+    label: 'Message',
+    instructions: 'Enter a message here.',
+    id: 'message',
+    name: 'message',
+    value: widget['message']})
+}}
