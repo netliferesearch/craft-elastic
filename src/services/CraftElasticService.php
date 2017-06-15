@@ -52,4 +52,36 @@ class CraftElasticService extends Component
 
         return $result;
     }
+
+    /*
+    *
+    * fra kristoffer
+    *
+    *
+
+    __constructor {
+        $config = Craft::$app->getConfig('elasticsearch')
+        $this->client = new Elasticsearch($config)
+    }
+
+    public function index(array $elements = array()) {
+        $this->client->index(array_map(function($element) {
+            ...
+        }, $elements))
+    }
+
+    public function indexSingle($element) {
+        return $this->index([$element])
+    }
+
+    public function delete($element) {
+        return $this->client->delete([
+            'index' => 
+            'type' => 
+            'id' => $element->id,
+        ])
+    }
+
+    */
+
 }

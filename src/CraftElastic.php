@@ -75,6 +75,40 @@ class CraftElastic extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        /*
+         * Fra Kristoffer:
+         *
+
+        // Do something before the element is saved
+        Event::on(
+            Elements::className(),
+            Elements::EVENT_BEFORE_SAVE_ELEMENT,
+            function (ElementEvent $foo) {
+                var_dump($foo);die;
+            }
+        );
+
+        // Do something before the element is deleted
+        Event::on(
+            Elements::className(),
+            Elements::EVENT_BEFORE_DELETE_ELEMENT,
+            function (ElementEvent $foo) {
+                var_dump($foo);die;
+            }
+        );
+
+        // Do something before the element is moved in the structure
+        Event::on(
+            Structures::className(),
+            Structures::EVENT_BEFORE_MOVE_ELEMENT,
+            function (ElementEvent $foo) {
+                var_dump($foo);die;
+            }
+        );
+
+        */
+
+
         // Register our site routes
         Event::on(
             UrlManager::className(),
