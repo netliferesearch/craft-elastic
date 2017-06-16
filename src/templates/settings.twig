@@ -16,10 +16,18 @@
 
 {% do view.registerAssetBundle("dfo\\craftelastic\\assetbundles\\craftelastic\\CraftElasticAsset") %}
 
+{{ forms.textAreaField({
+    label: 'Elasticsearch hosts',
+    instructions: 'Enter hosts, one on each line, eg. "127.0.0.1:9200", "localhost:9200" or "https://user:pass@localhost:443".',
+    id: 'elasticHosts',
+    name: 'elasticHosts',
+    value: settings['elasticHosts']})
+}}
+
 {{ forms.textField({
-    label: 'Some Field',
-    instructions: 'Enter some setting here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: settings['someAttribute']})
+    label: 'Elasticsearch index',
+    instructions: 'Enter desired Elasticsearch index here.',
+    id: 'elasticIndex',
+    name: 'elasticIndex',
+    value: settings['elasticIndex']})
 }}

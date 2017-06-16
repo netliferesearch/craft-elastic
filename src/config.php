@@ -24,7 +24,8 @@
 
 return [
 
-    // This controls blah blah blah
-    "someAttribute" => true,
+    // The Elasticsearch Host
+    'elasticHosts'  => '127.0.0.1:9200',
+    'elasticIndex' => 'craft'
 
 ];

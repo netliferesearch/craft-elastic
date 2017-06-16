@@ -22,8 +22,11 @@ use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\services\Utilities;
 use craft\services\Dashboard;
+use craft\services\Elements;
+use craft\services\Structures;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\ElementEvent;
 
 use yii\base\Event;
 
@@ -78,6 +81,8 @@ class CraftElastic extends Plugin
         /*
          * Fra Kristoffer:
          *
+         */
+
 
         // Do something before the element is saved
         Event::on(
@@ -105,9 +110,6 @@ class CraftElastic extends Plugin
                 var_dump($foo);die;
             }
         );
-
-        */
-
 
         // Register our site routes
         Event::on(

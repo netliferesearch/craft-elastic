@@ -12,12 +12,28 @@
  */
 #}
 
-<h1>CraftElasticUtility</h1>
+{% import "_includes/forms" as forms %}
 
-{% set iconUrl = view.getAssetManager().getPublishedUrl('@dfo/craftelastic/assetbundles/craftelasticutilityutility/dist', true) ~ '/img/CraftElasticUtility-icon.svg' %}
+{% if elasticIndexExists %}
+<p>exists</p>
+{% else %}
+<h2>Set up Elasticsearch index</h2>
+<p>The connection to Elasticsearch is working, but the index named <code>{{ elasticIndex }}</code> was not found. Do you want to create the index?</p>
 
-<img src="{{ iconUrl }}" height="64" width="64" />
+<form id="craft-elastic-utility" class="utility" method="post" accept-charset="UTF-8">
+    <input type="hidden" name="action" value="utilities/craft-elastic-perform-action">
+    {{ csrfInput() }}
+{#
+    {{ forms.checkbox({
+        name: 'downloadBackup',
+        label: 'Download backup?'|t('app'),
+        checked: true,
+    }) }}
+#}
+    <div class="buttons">
+        <input type="submit" class="btn submit" value="{{ "Create index!"|t('app') }}" />
+        <div class="utility-status"></div>
+    </div>
+</form>
 
-<p>Your Utility content goes here</p>
-
-<p>{{ someVar }}</p>
+{% endif %}

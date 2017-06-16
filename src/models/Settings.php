@@ -39,7 +39,8 @@ class Settings extends Model
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    public $elasticHosts  = '127.0.0.1:9200';
+    public $elasticIndex = 'craft';
 
     // Public Methods
     // =========================================================================
@@ -57,8 +58,7 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            [['elasticHosts', 'elasticIndex'], 'required']
         ];
     }
 }

@@ -39,7 +39,7 @@ class CraftElasticUtility extends Utility
      */
     public static function displayName(): string
     {
-        return Craft::t('craftelastic', 'CraftElasticUtility');
+        return Craft::t('craftelastic', 'Elasticsearch');
     }
 
     /**
@@ -84,12 +84,23 @@ class CraftElasticUtility extends Utility
     public static function contentHtml(): string
     {
         Craft::$app->getView()->registerAssetBundle(CraftElasticUtilityUtilityAsset::class);
+        $pageTitle = self::displayName();
 
-        $someVar = 'Have a nice day!';
+        $elastic = CraftElastic::$plugin->craftElasticService;
+
+        $elasticIndex = CraftElastic::$plugin->getSettings()->elasticIndex;
+        $elasticIndexExists = $elastic->client->indices()->exists([ 
+            'index' => $elasticIndex
+        ]);
+        
+        //var_dump($response);
+
         return Craft::$app->getView()->renderTemplate(
             'craftelastic/_components/utilities/CraftElasticUtility_content',
             [
-                'someVar' => $someVar
+                'pageTitle' => $pageTitle,
+                'elasticIndex' => $elasticIndex,
+                'elasticIndexExists' => $elasticIndexExists
             ]
         );
     }

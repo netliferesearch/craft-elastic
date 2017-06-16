@@ -11,6 +11,7 @@
 namespace dfo\craftelastic\services;
 
 use dfo\craftelastic\CraftElastic;
+use Elasticsearch\ClientBuilder;
 
 use Craft;
 use craft\base\Component;
@@ -43,14 +44,41 @@ class CraftElasticService extends Component
      *
      * @return mixed
      */
-    public function exampleService()
-    {
-        $result = 'something';
-        // Check our Plugin's settings for `someAttribute`
-        if (CraftElastic::$plugin->getSettings()->someAttribute) {
-        }
 
-        return $result;
+    public $client;
+    public $hosts;
+
+    public function __construct()
+    {
+        $this->hosts = $this->elasticHosts();
+        $this->client = ClientBuilder::create()
+            ->setHosts( $this->hosts )
+            ->build();
+    }
+
+    public function index(array $elements = array())
+    {
+        $this->client->index(array_map(function($element){
+
+        }, $elements));
+    }
+
+    public function indexSingle($element)
+    {
+        return $this->index([$element]);
+    }
+
+
+
+    // Helpers
+
+    protected function elasticHosts(): array
+    {
+        $hosts = CraftElastic::$plugin->getSettings()->elasticHosts;
+        $hosts = explode("\r", $hosts);
+        $hosts = array_map('trim', $hosts);
+
+        return $hosts;
     }
 
     /*
