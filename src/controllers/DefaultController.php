@@ -14,6 +14,7 @@ use dfo\craftelastic\CraftElastic;
 
 use Craft;
 use craft\web\Controller;
+use craft\elements\Entry;
 
 /**
  * Default Controller
@@ -38,6 +39,8 @@ use craft\web\Controller;
 class DefaultController extends Controller
 {
 
+    private $elastic = CraftElastic::$plugin->craftElasticService;
+
     // Protected Properties
     // =========================================================================
 
@@ -46,7 +49,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'do-something'];
+    protected $allowAnonymous = ['index', 'create-index', 'index-all'];
 
     // Public Methods
     // =========================================================================
@@ -66,14 +69,29 @@ class DefaultController extends Controller
 
     /**
      * Handle a request going to our plugin's actionDoSomething URL,
-     * e.g.: actions/craft-elastic/default/do-something
+     * e.g.: actions/craft-elastic/default/create-index
      *
      * @return mixed
      */
-    public function actionDoSomething()
+    public function actionCreateIndex()
     {
-        $result = 'Welcome to the DefaultController actionDoSomething() method';
+        $params  = [
+            'index' => CraftElastic::$plugin->getSettings()->elasticIndex
+        ];
+        $response = $this->elastic->client->indices()->create($params);
 
-        return $result;
+        return json_encode($response);
     }
+
+    public function actionIndexAll()
+    {
+        $query = Entry::find()
+            ->section('staticPage')
+            ->one()
+            ->asArray();
+
+        return json_encode($query[0][0]);
+    }
+
+
 }

@@ -125,7 +125,16 @@ class CraftElastic extends Plugin
             UrlManager::className(),
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'craft-elastic/default/do-something';
+                $event->rules['cpActionTrigger1'] = 'craft-elastic/default/create-index';
+            }
+        );
+
+        // Register our CP routes
+        Event::on(
+            UrlManager::className(),
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['cpActionTrigger1'] = 'craft-elastic/default/index-all';
             }
         );
 

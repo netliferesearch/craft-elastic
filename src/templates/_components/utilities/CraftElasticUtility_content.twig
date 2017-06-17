@@ -14,26 +14,34 @@
 
 {% import "_includes/forms" as forms %}
 
-{% if elasticIndexExists %}
-<p>exists</p>
-{% else %}
-<h2>Set up Elasticsearch index</h2>
-<p>The connection to Elasticsearch is working, but the index named <code>{{ elasticIndex }}</code> was not found. Do you want to create the index?</p>
-
-<form id="craft-elastic-utility" class="utility" method="post" accept-charset="UTF-8">
-    <input type="hidden" name="action" value="utilities/craft-elastic-perform-action">
+<form id="craft-elastic-form" class="utility" method="post" accept-charset="UTF-8">
     {{ csrfInput() }}
-{#
-    {{ forms.checkbox({
-        name: 'downloadBackup',
-        label: 'Download backup?'|t('app'),
-        checked: true,
-    }) }}
-#}
+
+    {% if elasticIndexExists %}
+    <input type="hidden" name="action" value="craft-elastic/default/index-all">
+    {% set submitValue = "Index entries" %}
+
+    <h2>Index all entries to Elasticsearch</h2>
+
+    {% else %}
+    <input type="hidden" name="action" value="craft-elastic/default/create-index">
+    {% set submitValue = "Create index" %}
+
+    <h2>Set up Elasticsearch index</h2>
+    <p>The connection to Elasticsearch is working, but the index named <code>{{ elasticIndex }}</code> was not found. Do you want to create the index?</p>
+    {#
+        {{ forms.checkbox({
+            name: 'downloadBackup',
+            label: 'Download backup?'|t('app'),
+            checked: true,
+        }) }}
+    #}
+    {% endif %}
+
     <div class="buttons">
-        <input type="submit" class="btn submit" value="{{ "Create index!"|t('app') }}" />
-        <div class="utility-status"></div>
+        <input type="submit" id="craft-elastic-submit" class="btn submit" value="{{ submitValue }}" />
+        <div class="query-spinner"></div>
     </div>
+    <div id="craft-elastic-result"></div>
 </form>
 
-{% endif %}
