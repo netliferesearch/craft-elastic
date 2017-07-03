@@ -18,6 +18,7 @@
     {{ csrfInput() }}
 
     {% if elasticIndexExists %}
+
     <input type="hidden" name="action" value="craft-elastic/default/index-all">
     {% set submitValue = "Index entries" %}
 

@@ -16,7 +16,7 @@ var $submit = $('#craft-elastic-submit');
 var $spinner = $('#query-spinner');
 var $results = $('#craft-elastic-result');
 var $executing = false;
-
+/*
 $form.on('submit', function(ev) {
     ev.preventDefault();
 
@@ -35,3 +35,4 @@ $form.on('submit', function(ev) {
         $results.html($response);
     });
 });
+*/

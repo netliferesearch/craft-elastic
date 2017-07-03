@@ -86,10 +86,12 @@ class CraftElasticUtility extends Utility
         Craft::$app->getView()->registerAssetBundle(CraftElasticUtilityUtilityAsset::class);
         $pageTitle = self::displayName();
 
-        $elastic = CraftElastic::$plugin->craftElasticService;
+        // $es = CraftElastic::$plugin->craftElasticService;
+        $es = CraftElastic::$plugin->craftElasticService->client();
 
         $elasticIndex = CraftElastic::$plugin->getSettings()->elasticIndex;
-        $elasticIndexExists = $elastic->client->indices()->exists([ 
+
+        $elasticIndexExists = $es->indices()->exists([ 
             'index' => $elasticIndex
         ]);
         

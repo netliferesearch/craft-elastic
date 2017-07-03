@@ -83,7 +83,7 @@ class CraftElastic extends Plugin
          *
          */
 
-
+/*
         // Do something before the element is saved
         Event::on(
             Elements::className(),
@@ -110,7 +110,7 @@ class CraftElastic extends Plugin
                 var_dump($foo);die;
             }
         );
-
+*/
         // Register our site routes
         Event::on(
             UrlManager::className(),

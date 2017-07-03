@@ -44,18 +44,22 @@ class CraftElasticService extends Component
      *
      * @return mixed
      */
-
-    public $client;
-    public $hosts;
-
+/*
+    private $client;
+    private $hosts;
+*/
+    // public static $client;
+/*
     public function __construct()
     {
         $this->hosts = $this->elasticHosts();
+        /*
         $this->client = ClientBuilder::create()
             ->setHosts( $this->hosts )
             ->build();
     }
-
+        */
+/*
     public function index(array $elements = array())
     {
         $this->client->index(array_map(function($element){
@@ -67,7 +71,15 @@ class CraftElasticService extends Component
     {
         return $this->index([$element]);
     }
+*/
 
+    public function client()
+    {
+        $client = ClientBuilder::create()
+            ->setHosts( $this->elasticHosts() )
+            ->build();
+        $return = $client;
+    }
 
 
     // Helpers

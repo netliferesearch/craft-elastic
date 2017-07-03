@@ -39,7 +39,7 @@ use craft\elements\Entry;
 class DefaultController extends Controller
 {
 
-    private $elastic = CraftElastic::$plugin->craftElasticService;
+    protected $elastic = CraftElastic::$plugin->craftElasticService;
 
     // Protected Properties
     // =========================================================================
@@ -75,23 +75,35 @@ class DefaultController extends Controller
      */
     public function actionCreateIndex()
     {
+        return "Hei";
+/*
         $params  = [
             'index' => CraftElastic::$plugin->getSettings()->elasticIndex
         ];
         $response = $this->elastic->client->indices()->create($params);
 
         return json_encode($response);
+*/
     }
 
     public function actionIndexAll()
     {
+        $params  = [
+            'index' => CraftElastic::$plugin->getSettings()->elasticIndex
+        ];
+
+        /*
         $query = Entry::find()
             ->section('staticPage')
             ->one()
             ->asArray();
+        */
 
-        return json_encode($query[0][0]);
+        //$response = $this->elastic->client->indices()->delete();
+
+        return "hei hopp.";
+
+        //return json_encode($query[0][0]);
     }
-
 
 }
