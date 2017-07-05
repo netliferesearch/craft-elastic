@@ -1,20 +1,22 @@
 <?php
 /**
- * Craft Elastic plugin for Craft CMS 3.x
+ * Elasticraft plugin for Craft CMS 3.x
  *
- * Craft integration with Elasticsearch
+ * Desc.
  *
  * @link      https://dfo.no
  * @copyright Copyright (c) 2017 Peter Holme Obrestad
  */
 
-namespace dfo\craftelastic\controllers;
+namespace dfo\elasticraft\controllers;
 
-use dfo\craftelastic\CraftElastic;
+use dfo\elasticraft\Elasticraft;
+use dfo\elasticraft\models\ElasticDocument;
 
 use Craft;
 use craft\web\Controller;
 use craft\elements\Entry;
+use yii\helpers\Json;
 
 /**
  * Default Controller
@@ -33,14 +35,11 @@ use craft\elements\Entry;
  * https://craftcms.com/docs/plugins/controllers
  *
  * @author    Peter Holme Obrestad
- * @package   CraftElastic
+ * @package   Elasticraft
  * @since     1.0.0
  */
 class DefaultController extends Controller
 {
-
-    protected $elastic = CraftElastic::$plugin->craftElasticService;
-
     // Protected Properties
     // =========================================================================
 
@@ -49,14 +48,16 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'create-index', 'index-all'];
+    protected $allowAnonymous = [
+        'index'
+    ];
 
     // Public Methods
     // =========================================================================
 
     /**
-     * Handle a request going to our plugin's index action URL,
-     * e.g.: actions/craft-elastic/default
+     * Handle a request going to:
+     * actions/elasticraft/default
      *
      * @return mixed
      */
@@ -68,42 +69,76 @@ class DefaultController extends Controller
     }
 
     /**
-     * Handle a request going to our plugin's actionDoSomething URL,
-     * e.g.: actions/craft-elastic/default/create-index
+     * Handle a request going to:
+     * actions/elasticraft/default/create-index
      *
      * @return mixed
      */
     public function actionCreateIndex()
     {
-        return "Hei";
-/*
-        $params  = [
-            'index' => CraftElastic::$plugin->getSettings()->elasticIndex
-        ];
-        $response = $this->elastic->client->indices()->create($params);
-
-        return json_encode($response);
-*/
+        return Elasticraft::$plugin->elasticraftService->createIndex();
     }
 
-    public function actionIndexAll()
+    /**
+     * Handle a request going to:
+     * actions/elasticraft/default/get-index
+     *
+     * @return mixed
+     */
+    public function actionGetIndex()
     {
-        $params  = [
-            'index' => CraftElastic::$plugin->getSettings()->elasticIndex
-        ];
+        return Elasticraft::$plugin->elasticraftService->getIndex();
+    }
 
-        /*
+    /**
+     * Handle a request going to:
+     * actions/elasticraft/default/delete-index
+     *
+     * @return mixed
+     */
+    public function actionDeleteIndex()
+    {
+        return Elasticraft::$plugin->elasticraftService->deleteIndex();
+    }
+
+    /**
+     * Handle a request going to:
+     * actions/elasticraft/default/index-exists
+     *
+     * @return mixed
+     */
+    public function actionIndexExists()
+    {
+        return Elasticraft::$plugin->elasticraftService->indexExists();
+    }
+
+    public function actionIndexStats()
+    {
+        return Elasticraft::$plugin->elasticraftService->indexStats();
+    }
+
+    public function actionReindex()
+    {
+        return Elasticraft::$plugin->elasticraftService->indexAllDocuments();
+    }
+
+    public function actionGetEntries()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
         $query = Entry::find()
-            ->section('staticPage')
-            ->one()
-            ->asArray();
-        */
+            ->all();
 
-        //$response = $this->elastic->client->indices()->delete();
+        $entries = [];
 
-        return "hei hopp.";
+        foreach ($query as $entry) {
+            //$entries[] = $entry;
+            //$entries[] = $entry->getType()->handle;
+            $entries[] = $entry->level;
+            // $entries[] = $this->getEntryAsJson( $entry );
+        }
 
-        //return json_encode($query[0][0]);
+        return $entries;
     }
 
 }

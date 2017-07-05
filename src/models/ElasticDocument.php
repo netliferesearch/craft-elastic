@@ -14,11 +14,10 @@ use dfo\elasticraft\Elasticraft;
 
 use Craft;
 use craft\base\Model;
+use craft\elements\Entry;
 
 /**
- * Elasticraft Settings Model
- *
- * This is a model used to define the plugin's settings.
+ * ElasticDocument Model
  *
  * Models are containers for data. Just about every time information is passed
  * between services, controllers, and templates in Craft, it’s passed via a model.
@@ -29,22 +28,53 @@ use craft\base\Model;
  * @package   Elasticraft
  * @since     1.0.0
  */
-class Settings extends Model
+class ElasticDocument extends Model
 {
     // Public Properties
     // =========================================================================
 
     /**
-     * Some field model attribute
+     * Some model attribute
      *
      * @var string
      */
-    public $hosts = [];
-    public $indexName = '';
-    public $transformers =[];
+    public $id;
+    public $type;
+    public $body = [];
+    // parent children relationships requires different document types in Elasticsearch for now. 
+    //public $parent;
+    //public $routing;
 
+    protected $transformers = []; 
+
+    public function init()
+    {
+        parent::init();
+
+        $this->transformers = Elasticraft::$plugin
+            ->getInstance()
+            ->getSettings()
+            ->transformers;
+    }
     // Public Methods
     // =========================================================================
+
+    public static function withEntry( craft\elements\Entry $entry )
+    {
+        $instance = new self();
+        $instance->loadByEntry( $entry );
+        return $instance;
+    }
+
+    protected function loadByEntry( craft\elements\Entry $entry )
+    {
+        $this->type = $entry->getType()->handle;
+        $this->id = $entry->id;
+
+        if ( isset( $this->transformers[$this->type] ) ) {
+            $this->body = $this->transformers[$this->type]->transform($entry);
+        }
+    }
 
     /**
      * Returns the validation rules for attributes.
@@ -59,9 +89,9 @@ class Settings extends Model
     public function rules()
     {
         return [
-            [['hosts', 'transformers'], 'array'],
-            ['indexName', 'string'],
-            [['hosts', 'index'], 'required']
+            [['id', 'type'], 'string'],
+            [['body'], 'array'],
+            [['id', 'type'], 'required'],
         ];
     }
 }

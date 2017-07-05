@@ -1,0 +1,37 @@
+{#
+/**
+ * Elasticraft plugin for Craft CMS
+ *
+ * ElasticraftUtility Utility Content
+ *
+ * @author    Peter Holme Obrestad
+ * @copyright Copyright (c) 2017 Peter Holme Obrestad
+ * @link      https://dfo.no
+ * @package   Elasticraft
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+<form id="elasticraft-create-index-form" class="utility elasticraft" method="post" accept-charset="UTF-8">
+    {{ csrfInput() }}
+    <h2>Index management</h2>
+
+    <p>Perform index operations, using index <code>{{ indexName }}</code>.</p>
+
+    <div class="buttons">
+      <input type="button" class="btn" name="elasticraft/default/create-index" value="Create index" />
+      <input type="button" class="btn" name="elasticraft/default/get-index" value="Get index" />
+      <input type="button" class="btn" name="elasticraft/default/delete-index" value="Delete index" />
+      <input type="button" class="btn" name="elasticraft/default/index-exists" value="Check if index exists" />
+      <input type="button" class="btn" name="elasticraft/default/index-stats" value="Index stats" />
+      <input type="button" class="btn" name="elasticraft/default/get-entries" value="Get entries" />
+      <input type="button" class="btn" name="elasticraft/default/reindex" value="Reindex" />
+
+      <div id="query-spinner"></div>
+    </div>
+
+    <h3>Result</h3>
+    <pre id="elasticraft-result"></pre>
+</form>
