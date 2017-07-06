@@ -62,7 +62,29 @@ class ElasticraftService extends Component
      */
     public function createIndex()
     {
-        $params  = [ 'index' => $this->indexName ];
+        $params  = [ 
+            'index' => $this->indexName,
+            'body' => [
+                'mappings' => [
+                    '_default_' => [
+                        'properties' => [
+                            'elastic.dateCreated' => [
+                                'type' => 'date',
+                                'format' => 'epoch_second'
+                            ],
+                            'elastic.dateUpdated' => [
+                                'type' => 'date',
+                                'format' => 'epoch_second'
+                            ],
+                            'elastic.dateIndexed' => [
+                                'type' => 'date',
+                                'format' => 'epoch_second'
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
         try {
             $response = $this->client->indices()->create($params);
         } catch (\Exception $e) {
@@ -138,13 +160,18 @@ class ElasticraftService extends Component
             return is_a( $doc, 'dfo\elasticraft\models\ElasticDocument' );
         });
 
-        $params = [ 'body' => [] ];
+        if( $docs && !$this->indexExists() )
+            $this->createIndex();
+
+        $params = [ 
+            'index' => $this->indexName,
+            'body' => [],
+        ];
         $responses = [];
 
         foreach ($docs as $i => $doc) {
             $params['body'][] = [
                 $action => [
-                    '_index' => $this->indexName,
                     '_type' => $doc->type,
                     '_id' => $doc->id,
                 ]
@@ -153,6 +180,7 @@ class ElasticraftService extends Component
                 $params['body'][] = $doc->body;
             }
 
+            // send in batches of 1000 docs
             if ($i % 1000 == 0) {
                 try {
                     $response = $this->client->bulk($params);
@@ -161,12 +189,12 @@ class ElasticraftService extends Component
                 }
                 $responses[] = $response;
 
-                $params = [ 'body' => [] ];
+                $params['body'] = [];
 
                 unset($response);
             }
         }
-
+        // send the rest
         if (!empty($params['body'])) {
             try {
                 $response = $this->client->bulk($params);

@@ -41,6 +41,8 @@ class ElasticDocument extends Model
     public $id;
     public $type;
     public $body = [];
+    public $dateCreated;
+    public $dateUpdated;
     // parent children relationships requires different document types in Elasticsearch for now. 
     //public $parent;
     //public $routing;
@@ -70,10 +72,12 @@ class ElasticDocument extends Model
     {
         $this->type = $entry->getType()->handle;
         $this->id = $entry->id;
-
         if ( isset( $this->transformers[$this->type] ) ) {
             $this->body = $this->transformers[$this->type]->transform($entry);
         }
+        $this->body['elastic']['dateCreated'] = $entry->dateCreated->format('U');
+        $this->body['elastic']['dateUpdated'] = $entry->dateUpdated->format('U');
+        $this->body['elastic']['dateIndexed'] = time();
     }
 
     /**
