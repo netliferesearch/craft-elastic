@@ -126,9 +126,10 @@ class Elasticraft extends Plugin
         );
 
         // Register index events
+        // Must use "AFTER", using "BEFORE" led to error when trying to save new entry.
         Event::on(
             Elements::className(),
-            Elements::EVENT_BEFORE_SAVE_ELEMENT,
+            Elements::EVENT_AFTER_SAVE_ELEMENT,
             function (ElementEvent $event) {
                 if ( $event->element instanceof craft\elements\Entry ) {
                     $doc = ElasticDocument::withEntry( $event->element );
@@ -151,17 +152,14 @@ class Elasticraft extends Plugin
         // TODO: not working yet. The old uri is indexed, not the new one
         Event::on(
             Structures::className(),
-            Structures::EVENT_BEFORE_MOVE_ELEMENT,
+            Structures::EVENT_AFTER_MOVE_ELEMENT,
             function (MoveElementEvent $event) {
-                /*
                 if ( $event->element instanceof craft\elements\Entry ) {
                     $doc = ElasticDocument::withEntry( $event->element );
                     return $this->elasticraftService->indexDocument($doc);
                 }
-                */
             }
         );
-
 
         // Do something after we're installed
         Event::on(
