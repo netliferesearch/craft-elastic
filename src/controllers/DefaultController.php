@@ -69,75 +69,36 @@ class DefaultController extends Controller
     }
 
     /**
-     * Handle a request going to:
+     * Handle requests going to:
+     * actions/elasticraft/default/ping
      * actions/elasticraft/default/create-index
+     * etc.
      *
      * @return mixed
      */
-    public function actionCreateIndex()
-    {
-        return Elasticraft::$plugin->elasticraftService->createIndex();
-    }
+    public function actionPing() { return Elasticraft::$plugin->elasticraftService->ping(); }
+    public function actionCreateIndex() { return Elasticraft::$plugin->elasticraftService->createIndex(); }
+    public function actionGetIndex() { return Elasticraft::$plugin->elasticraftService->getIndex(); }
+    public function actionDeleteIndex() { return Elasticraft::$plugin->elasticraftService->deleteIndex(); }
+    public function actionIndexExists() { return Elasticraft::$plugin->elasticraftService->indexExists(); }
+    public function actionIndexStats() { return Elasticraft::$plugin->elasticraftService->indexStats(); }
+    public function actionReindex() { return Elasticraft::$plugin->elasticraftService->indexAllDocuments(); }
 
-    /**
-     * Handle a request going to:
-     * actions/elasticraft/default/get-index
-     *
-     * @return mixed
-     */
-    public function actionGetIndex()
-    {
-        return Elasticraft::$plugin->elasticraftService->getIndex();
-    }
-
-    /**
-     * Handle a request going to:
-     * actions/elasticraft/default/delete-index
-     *
-     * @return mixed
-     */
-    public function actionDeleteIndex()
-    {
-        return Elasticraft::$plugin->elasticraftService->deleteIndex();
-    }
-
-    /**
-     * Handle a request going to:
-     * actions/elasticraft/default/index-exists
-     *
-     * @return mixed
-     */
-    public function actionIndexExists()
-    {
-        return Elasticraft::$plugin->elasticraftService->indexExists();
-    }
-
-    public function actionIndexStats()
-    {
-        return Elasticraft::$plugin->elasticraftService->indexStats();
-    }
-
-    public function actionReindex()
-    {
-        return Elasticraft::$plugin->elasticraftService->indexAllDocuments();
-    }
-
-    public function actionGetEntries()
+    public function actionGetTransformedEntries($limit = 10)
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $entries = $this->actionGetEntries($limit);
+        $entries = array_map(function($entry){
+            return ElasticDocument::withEntry( $entry );
+        }, $entries);
+        return $entries;
+    }
 
-        $query = Entry::find()
+    public function actionGetEntries($limit = 10)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $entries = Entry::find()
             ->all();
-
-        $entries = [];
-
-        foreach ($query as $entry) {
-            //$entries[] = $entry;
-            //$entries[] = $entry->getType()->handle;
-            $entries[] = $entry->level;
-            // $entries[] = $this->getEntryAsJson( $entry );
-        }
-
         return $entries;
     }
 

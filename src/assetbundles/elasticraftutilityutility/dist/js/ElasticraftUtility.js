@@ -13,6 +13,35 @@
 var buttons = $("form.elasticraft input[type='button']");
 var executing = false;
 
+$(document).ready(function(){
+    refreshContent();
+    this.$status = $('.utility-status', this.$form);
+});
+
+function refreshContent() {
+    Craft.postActionRequest('elasticraft/default/ping', function(connectionWorks) {
+        if (connectionWorks) {
+            $('#connectionNotWorking').addClass('hidden');
+            Craft.postActionRequest('elasticraft/default/index-exists', function(indexExists) {
+                if (indexExists) {
+                    $('#indexDoesNotExist').addClass('hidden');
+                    $('#indexUtilities').removeClass('hidden');
+                    
+                    Craft.postActionRequest('elasticraft/default/index-stats', function(indexStats) {
+                        $('#numDocsIndexed').html(indexStats['_all']['primaries']['docs']['count']);
+                    });
+
+                } else {
+                    $('#indexUtilities').addClass('hidden');
+                    $('#indexDoesNotExist').removeClass('hidden');
+                }
+            });
+        } else {
+            $('#connectionNotWorking').removeClass('hidden');
+        }
+    });
+}
+
 buttons.on("click", function(ev) {
     ev.preventDefault();
 
@@ -23,18 +52,18 @@ buttons.on("click", function(ev) {
 
     var $this = $(this);
     var action = $this.attr('name');
-    var spinner = $("#query-spinner");
+    var spinner = $('#spinner');
     var results = $('#elasticraft-result');
 
     $this.addClass('active');
-    spinner.removeClass('hidden');
+    results.html('<div id="spinner" class="spinner"></div>');
 
     Craft.postActionRequest(action, function(response) {
         $this.removeClass('active');
         spinner.addClass('hidden');
         executing = false;
-        // results.html( JSON.stringify(response, null, 4) );
         results.html( syntaxHighlight(JSON.stringify(response, null, 4)) );
+        refreshContent();
     });
 
 });
