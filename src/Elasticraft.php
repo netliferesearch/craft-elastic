@@ -149,10 +149,11 @@ class Elasticraft extends Plugin
             }
         );
 
-        // TODO: not working yet. The old uri is indexed, not the new one
         Event::on(
             Structures::className(),
-            Structures::EVENT_AFTER_MOVE_ELEMENT,
+            // Structures::EVENT_AFTER_MOVE_ELEMENT,
+            // ref https://github.com/craftcms/cms/issues/1828
+            Structures::EVENT_AFTER_UPDATE_SLUG_AND_URI,
             function (MoveElementEvent $event) {
                 if ( $event->element instanceof craft\elements\Entry ) {
                     $doc = ElasticDocument::withEntry( $event->element );
