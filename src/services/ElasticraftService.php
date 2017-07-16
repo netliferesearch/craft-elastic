@@ -45,7 +45,7 @@ class ElasticraftService extends Component
         $this->client =  $this->getClient();
         $this->indexName = $this->getIndexName();
 
-        # Since all returns are JSON, add this here.
+        # Since all returns are supposed to be JSON, add this here.
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     }
 
@@ -60,6 +60,29 @@ class ElasticraftService extends Component
      *
      * @return mixed
      */
+
+    public function ping()
+    {
+        $params = [ ];
+        try {
+            $response = $this->client->ping($params);
+        } catch (\Exception $e) {
+            return Json::decode($e->getMessage());
+        }
+        return $response;
+    }
+
+    public function indexExists()
+    {
+        $params = [ 'index' => $this->indexName ];
+        try {
+            $response = $this->client->indices()->exists($params);
+        } catch (\Exception $e) {
+            return Json::decode($e->getMessage());
+        }
+        return $response;
+    }
+
     public function createIndex()
     {
         $params  = [ 
@@ -115,21 +138,11 @@ class ElasticraftService extends Component
         return $response;
     }
 
-    public function indexExists()
-    {
-        $params = [ 'index' => $this->indexName ];
-        try {
-            $response = $this->client->indices()->exists($params);
-        } catch (\Exception $e) {
-            return Json::decode($e->getMessage());
-        }
-        return $response;
-    }
-
     public function indexStats()
     {
         $params = [ 'index' => $this->indexName ];
         try {
+            $response = $this->client->indices()->refresh($params);
             $response = $this->client->indices()->stats($params);
         } catch (\Exception $e) {
             return Json::decode($e->getMessage());
@@ -145,6 +158,16 @@ class ElasticraftService extends Component
     public function indexDocuments(array $docs)
     {
         return $this->bulk($docs);
+    }
+
+    public function indexAllDocuments()
+    {
+        $entries = Entry::find()
+            ->all();
+        $docs = array_map( function($entry) {
+            return ElasticDocument::withEntry( $entry );
+        }, $entries );
+        return $this->indexDocuments($docs);
     }
 
     public function deleteDocument(ElasticDocument $doc)
@@ -205,16 +228,6 @@ class ElasticraftService extends Component
         }
 
         return $responses;
-    }
-
-    public function indexAllDocuments()
-    {
-        $docs = array_map( function($entry) {
-            return ElasticDocument::withEntry( $entry );
-        }, Entry::find()
-            ->all()
-        );
-        return $this->indexDocuments($docs);
     }
 
     // Private methods

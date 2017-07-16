@@ -73,6 +73,9 @@ class ElasticraftUtility extends Utility
      */
     public static function badgeCount(): int
     {
+        if (Elasticraft::$plugin->elasticraftService->ping() === false
+          ||Elasticraft::$plugin->elasticraftService->indexExists() === false
+        ) return 1;
         return 0;
     }
 
@@ -85,12 +88,10 @@ class ElasticraftUtility extends Utility
     {
         Craft::$app->getView()->registerAssetBundle(ElasticraftUtilityUtilityAsset::class);
 
-        $indexName = Elasticraft::$plugin->elasticraftService->indexName;
-
         return Craft::$app->getView()->renderTemplate(
             'elasticraft/_components/utilities/ElasticraftUtility_content',
             [
-                'indexName' => $indexName
+                'indexName'       => Elasticraft::$plugin->elasticraftService->indexName,
             ]
         );
     }
