@@ -25,11 +25,11 @@ use craft\web\UrlManager;
 use craft\services\Utilities;
 use craft\services\Dashboard;
 use craft\services\Elements;
-use craft\services\Structures;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\ElementEvent;
 use craft\events\MoveElementEvent;
+use craft\elements\Entry;
 
 use yii\base\Event;
 
@@ -150,13 +150,17 @@ class Elasticraft extends Plugin
         );
 
         Event::on(
-            Structures::className(),
+            Elements::className(),
             // Structures::EVENT_AFTER_MOVE_ELEMENT,
             // ref https://github.com/craftcms/cms/issues/1828
-            Structures::EVENT_AFTER_UPDATE_SLUG_AND_URI,
-            function (MoveElementEvent $event) {
+            Elements::EVENT_AFTER_UPDATE_SLUG_AND_URI,
+            function (ElementEvent $event) {
                 if ( $event->element instanceof craft\elements\Entry ) {
-                    $doc = ElasticDocument::withEntry( $event->element );
+                    // Not working: $doc = ElasticDocument::withEntry( $event->element );
+                    // Fetch entry again to get URI:
+                    $doc = ElasticDocument::withEntry( 
+                        Entry::find()->id( $event->element->id )->one() 
+                    );
                     return $this->elasticraftService->indexDocument($doc);
                 }
             }
